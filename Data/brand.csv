@@ -1,0 +1,15 @@
+﻿business_unit,brand_id,brand_name,description,brand_revenue_USD
+Adventure Sports,BRD_1,Fox Racing,Apparel and gear for motocross and mountain biking.,200
+Adventure Sports,BRD_2,Bell Helmets,"Helmets for cycling, motorcycling, and powersports.",75
+Adventure Sports,BRD_3,Giro,"Cycling and snow sports helmets, shoes, and apparel.",75
+Adventure Sports,BRD_4,CamelBak,"Hydration packs, water bottles, and accessories.",125
+Adventure Sports,BRD_5,QuietKat,Electric bikes designed for hunting and outdoor use.,80
+Adventure Sports,BRD_6,Blackburn,"Cycling accessories including lights, pumps, and racks.",50
+Outdoor Performance,BRD_7,Bushnell,Optics and outdoor products like binoculars and scopes.,150
+Outdoor Performance,BRD_8,Simms Fishing,"Fishing gear including waders, outerwear, and accessories.",110
+Outdoor Performance,BRD_9,Camp Chef,Outdoor cooking equipment like grills and stoves.,50
+Outdoor Performance,BRD_10,Primos Hunting,"Hunting calls, blinds, and accessories.",41
+Outdoor Performance,BRD_11,Stone Glacier,Lightweight hunting packs and gear.,40
+Outdoor Performance,BRD_12,Blackhawk,Tactical gear and apparel for military and law enforcement.,60
+Precision Sports & Technology,BRD_13,Bushnell Golf,Golf rangefinders and GPS devices.,79
+Precision Sports & Technology,BRD_14,Foresight Sports,Golf simulation and launch monitor technology.,160

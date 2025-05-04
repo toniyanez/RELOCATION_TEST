@@ -1,0 +1,18 @@
+﻿competitor_id,competitor_name,brand_id,revenue_usd
+comp_1,TrackMan,"BRD_13,BRD_14",750
+comp_2,FlightScope,"BRD_13,BRD_14",40
+comp_3,SkyTrak,"BRD_13,BRD_14",30
+comp_4,Garmin (Golf),"BRD_13,BRD_14",60
+comp_5,"Leupold & Stevens	","BRD_7,BRD_8,BRD_9,BRD_10,BRD_11,BRD_12",160
+comp_6,"Vortex Optics	","BRD_7,BRD_8,BRD_9,BRD_10,BRD_11,BRD_12",90
+comp_7,Orvis,"BRD_7,BRD_8,BRD_9,BRD_10,BRD_11,BRD_12",76
+comp_8,Traeger,"BRD_7,BRD_8,BRD_9,BRD_10,BRD_11,BRD_12",604
+comp_9,YETI (outdoor gear),"BRD_7,BRD_8,BRD_9,BRD_10,BRD_11,BRD_12",1830
+comp_10,Hoyt Archery,"BRD_7,BRD_8,BRD_9,BRD_10,BRD_11,BRD_12",41
+comp_11,Sitka Gear,"BRD_7,BRD_8,BRD_9,BRD_10,BRD_11,BRD_12",41
+comp_12,5.11 Tactical,"BRD_7,BRD_8,BRD_9,BRD_10,BRD_11,BRD_12",750
+comp_13,Troy Lee Designs,"BRD_1,BRD_2,BRD_3,BRD_4,BRD_5,BRD_6",35
+comp_14,Hydro Flask,"BRD_1,BRD_2,BRD_3,BRD_4,BRD_5,BRD_6",120
+comp_15,Trek Bicycles,"BRD_1,BRD_2,BRD_3,BRD_4,BRD_5,BRD_6",1300
+comp_16,Rambo bikes,"BRD_1,BRD_2,BRD_3,BRD_4,BRD_5,BRD_6",5
+comp_17,Lezyne,"BRD_1,BRD_2,BRD_3,BRD_4,BRD_5,BRD_6",12

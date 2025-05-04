@@ -1,0 +1,56 @@
+﻿competitor_id,competitor_name,competitor_supplier_country,Proportion_imports,notes_competitor_supply_chain
+comp_1,TrackMan,China,45%,Significant import source mentioned.25 Proxy based on shipment count/mentions vs Germany/Denmark.
+comp_1,TrackMan,Germany,45%,Major import source based on available data.26 Adjusted slightly to account for other potential sources.
+comp_2,TrackMan,Denmark,5%,"Headquarters location 27, likely some high-value components or final assembly/QC. Minor import source noted.26"
+comp_1,TrackMan,"Other (S. Korea, USA)",5%,"Mentioned as potential origins 25, but likely smaller scale or specific components. Grouped for clarity."
+comp_2,FlightScope,South Africa,50%,"Original founding location 29, likely R&D, core tech, possibly some manufacturing. No direct import data, inference based on origin."
+comp_2,FlightScope,USA,30%,"HQ relocated to Orlando, FL.30 Some simulator packages mention ""Made in USA"" components (likely screens/frames).31 Inference."
+comp_2,FlightScope,Asia (Unspecified),20%,"Common for electronics components. No direct information, assumed based on industry norms for cost-effective component sourcing. Inference."
+comp_3,SkyTrak,Turkey,50%,"Major import source based on data for ""Skytrak Ltd"" (potentially related entity).32 Adjusted estimate, acknowledging potential entity mismatch (see Sec 3.2.1 & 5.3)."
+comp_3,SkyTrak,Indonesia,30%,"Significant import source based on ""Skytrak Ltd"" data.32 Adjusted estimate, acknowledging potential entity mismatch."
+comp_3,SkyTrak,Vietnam,10%,"Minor import source based on ""Skytrak Ltd"" data.32"
+comp_3,SkyTrak,USA,10%,"US presence (HQ/returns in CO 34), software development 36, possible final assembly/QC. Inference."
+comp_4,Garmin (Golf/Outdoor),Taiwan,70%,"Major manufacturing facility established early 37, key Asia Corp HQ.38 Assumed primary source for mass-produced electronics."
+comp_4,Garmin (Golf/Outdoor),USA,20%,"US HQ (KS), R&D, some manufacturing/assembly.37 Vertical integration model suggests some US production.38"
+comp_4,Garmin (Golf/Outdoor),China,5%,"Common source for components/accessories, though primary manufacturing is stated as Taiwan/US. Assumption based on industry."
+comp_4,Garmin (Golf/Outdoor),Other (Europe - UK),5%,"European HQ/facility exists 38, likely for regional distribution, support, possibly some localization/accessories. Minor sourcing role."
+comp_5,Leupold & Stevens,USA,85%,"Strong emphasis on US manufacturing in Beaverton, OR.1 Core optics likely made here."
+comp_5,Leupold & Stevens,Philippines,10%,"Data shows Philippines origin for specific products (Rangefinders, Lenses, Samples) exported to the US.42 Suggests component/sub-assembly."
+comp_5,Leupold & Stevens,China,5%,"Data shows supplier ""Shanghai Kahe Precious Machining"".42 Likely specific components or accessories. Minor role."
+comp_6,Vortex Optics,China,60%,Import data strongly indicates China as a major source.43 Common for optics components and assembly at various price points.
+comp_6,Vortex Optics,Philippines,20%,"Known manufacturing hub for optics, possible diversification from China. (Inference, common industry practice, no direct information)."
+comp_6,Vortex Optics,Japan,10%,"High-quality optics components often sourced from Japan. (Inference, common industry practice, no direct information)."
+comp_6,Vortex Optics,USA,10%,"US HQ (WI) 45, likely design, R&D, possibly some high-end assembly/QC, but primary manufacturing appears offshore."
+comp_7,Orvis,India,50%,Dominant import source based on available data.48 Adjusted for other categories.
+comp_7,Orvis,China,15%,"Significant import source 48, likely hard goods, accessories, some apparel."
+comp_7,Orvis,USA,15%,"Fly rods explicitly made in Manchester, VT.3 Represents high-value, core product category."
+comp_7,Orvis,Vietnam,5%,Import source mentioned.48
+comp_7,Orvis,Indonesia,5%,Import source mentioned.48
+comp_7,Orvis,Other (Various Asia/LatAm),10%,Numerous other countries listed with small percentages.48 Grouped for clarity.
+comp_8,Traeger,China,70%,Explicitly stated manufacturing location.5 Dominant import source in available data.50
+comp_8,Traeger,Vietnam,30%,"Explicitly stated manufacturing location.5 Minor import source in available data 50, but stated as a location, likely growing share."
+comp_9,YETI (Coolers/Drinkware),China,50%,Hopper coolers and Rambler drinkware explicitly made in China.6 Common source for vacuum-insulated steel.51
+comp_9,YETI (Coolers/Drinkware),USA,30%,Tundra coolers manufactured in Iowa/Wisconsin.6 Represents significant hard cooler volume/value.
+comp_9,YETI (Coolers/Drinkware),Philippines,20%,Tundra coolers also manufactured in the Philippines.6 Diversification source.
+comp_10,Hoyt Archery,Data Not Available,N/A,No relevant information provided for Hoyt Archery manufacturing or import data.
+comp_11,Sitka Gear,Vietnam,70%,Dominant source based on data showing large apparel shipments originating from Vietnam.52
+comp_11,Sitka Gear,China,20%,"Common source for textiles, components, accessories. Assumed secondary source based on industry norms. (Inference)."
+comp_11,Sitka Gear,USA,10%,"HQ in Bozeman, MT.54 Design, R&D, possibly some specialized/Berry compliant items or final QC. (Inference)."
+comp_12,5.11 Tactical,Vietnam,30%,Import data shows Vietnam as a source for components/materials.55 Common apparel manufacturing hub.
+comp_12,5.11 Tactical,China,30%,"Import data for ""5.11 Tactical Series"" shows China as 100% source for those specific imports.56 Likely finished goods/components."
+comp_12,5.11 Tactical,Indonesia,20%,"Export data from Indonesian entity ""5.11 Tactical Ops Center"" implies manufacturing there.55"
+comp_12,5.11 Tactical,"Other Asia (e.g., Bangladesh)",15%,Common apparel sourcing region..57
+comp_12,5.11 Tactical,USA,5%,"HQ in Irvine, CA.57 Design, R&D. Some products potentially ""Made in USA"".57 Minor overall role likely."
+comp_13,Troy Lee Designs,China,40%,"Likely primary source for helmets and apparel components/assembly based on industry norms for cost. (Inference, no direct import/mfg data)."
+comp_13,Troy Lee Designs,Vietnam,30%,Alternative/secondary major apparel/gear manufacturing hub in Asia. (Inference).
+comp_13,Troy Lee Designs,Taiwan,15%,"Potential source for specialized components, particularly for helmets or bike gear. (Inference)."
+comp_13,Troy Lee Designs,USA,15%,"HQ in Corona, CA.58 Design, R&D, high-end customization, possibly some limited assembly/QC. (Inference)."
+comp_14,Hydro Flask,China,95%,Explicitly stated manufacturing location.51 Parent co. Helen of Troy confirms heavy China reliance but diversification efforts.60
+comp_14,Hydro Flask,Other Asia/North America,5%,"Parent company's diversification efforts 60 suggest potential minor sourcing from other Asian countries or North America, but likely still small scale."
+comp_15,Trek Bicycles,Taiwan,50%,Stated as primary manufacturing location for most bikes.61 Major hub for bicycle industry.
+comp_15,Trek Bicycles,China,30%,"Stated as manufacturing location.61 Available data shows Trek Bicycle entity in China exporting to Vietnam 62, implying complex inter-company flows."
+comp_15,Trek Bicycles,USA,10%,"High-end models manufactured/assembled in Waterloo, WI.61 Core brand identity, but smaller volume."
+comp_15,Trek Bicycles,Germany/Netherlands,10%,"Mentioned as manufacturing locations 61, possibly for specific models (e-bikes?) or regional markets."
+comp_16,Rambo bikes,China,100%,Available data shows 100% of listed import shipments originating from China.63 Suppliers listed are Chinese.
+comp_17,Lezyne,Taiwan,80%,Explicitly stated primary manufacturing location (factory in Taichung).64 Import data shows Taiwan as a source.66
+comp_17,Lezyne,China,20%,Data shows China as the dominant source (82.6%) for imports into the US by Lezyne USA Inc.66 This likely represents finished goods from Taiwan via China or direct sourcing of some items/components from China (see Sec 3.2.5 & 5.3).
