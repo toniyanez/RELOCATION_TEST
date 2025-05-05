@@ -2,4 +2,8 @@
 <<<<<<< HEAD
 =======
 .env
+<<<<<<< HEAD
 >>>>>>> fefb846 (Add .env to .gitignore)
+=======
+.env
+>>>>>>> 85fff7c (Remove .env file from repository)
