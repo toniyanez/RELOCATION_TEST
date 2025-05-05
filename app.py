@@ -15,7 +15,7 @@ competitors_data = pd.read_csv('Data/competitors.csv')
 supply_chain_data = pd.read_csv('Data/Competitors_Supply_chain.csv')
 
 # Initialize the Dash app
-app = Dash(__name__)
+app = Dash(__name__, suppress_callback_exceptions=True)
 
 # Layout of the dashboard
 app.layout = html.Div([
@@ -50,25 +50,16 @@ app.layout = html.Div([
                     'border-right': '1px solid #ccc'
                 }),
 
-                # Central Panel: Revenue by Brand Chart and Product Table
+                # Central Panel: Revenue by Brand Chart
                 html.Div([
                     html.H3("Revenue by Brand"),
                     dcc.Graph(id='brand-bar-chart'),
-                    html.H3("Product Table"),
-                    dash_table.DataTable(
-                        id='product-table',
-                        columns=[
-                            {"name": "Product", "id": "product"},
-                            {"name": "Tariff", "id": "tariff"},
-                            {"name": "Country", "id": "country"},
-                            {"name": "Comments", "id": "comments"}
-                        ],
-                        style_table={'overflowX': 'auto'},
-                        style_cell={'textAlign': 'left'},
-                        filter_action="native",
-                        sort_action="native",
-                        page_size=10
-                    )
+                    # Add placeholders for the charts in the layout
+                    html.Div([
+                        dcc.Graph(id='profit-impact-bar-chart-main'),
+                        dcc.Graph(id='cogs-pie-chart-main'),
+                        dcc.Graph(id='profit-margin-line-chart-main')
+                    ], style={'width': '100%', 'display': 'inline-block'}),
                 ], style={
                     'width': '50%',
                     'display': 'inline-block',
@@ -128,8 +119,37 @@ app.layout = html.Div([
 
         dcc.Tab(label='Relocation Simulation', children=[
             html.Div([
-                html.H3("Radar Chart for Country Proposal"),
-                dcc.Graph(id='radar-chart')
+                html.H3("Relocation Simulation"),
+                html.Label("Select a Brand"),
+                dcc.Dropdown(
+                    id='relocation-brand-dropdown',
+                    options=[{'label': brand, 'value': brand} for brand in brand_data['brand_name'].unique()],
+                    placeholder="Select a Brand",
+                    style={'margin-bottom': '20px'}
+                ),
+                dcc.Graph(id='relocation-radar-chart'),
+                html.Div(id='relocation-conclusion', style={'margin-top': '20px'}),
+                html.H3("Chat with OpenAI Agent"),
+                html.Div(
+                    id='chat-container',
+                    style={
+                        'width': '100%',
+                        'height': '400px',  # Increase the height of the chat box
+                        'overflow-y': 'scroll',  # Enable vertical scrolling
+                        'border': '1px solid #ccc',
+                        'padding': '10px',
+                        'border-radius': '5px',
+                        'background-color': '#f9f9f9',
+                        'whiteSpace': 'pre-line'
+                    }
+                ),
+                dcc.Input(
+                    id='chat-input',
+                    placeholder="Type your message here and press Enter...",
+                    style={'width': '100%', 'margin-top': '10px', 'padding': '10px'},
+                    type='text',
+                    n_submit=0  # Detect Enter key press
+                )
             ], style={'width': '100%', 'display': 'inline-block', 'margin-top': '20px'})
         ])
     ])
@@ -167,50 +187,6 @@ def interpret_description_with_openai(brand_name_or_category, description):
                 "comments": parts[3].strip()
             })
     return structured_data
-
-# Callback to update the product table based on selected brand
-@app.callback(
-    Output('product-table', 'data'),
-    Input('brand-bar-chart', 'clickData')
-)
-def update_product_table(click_data):
-    # Fixed product categories for simplicity
-    product_categories = ["Helmets", "Binoculars", "Precision Optics", "Electronic Devices"]
-
-    # Prompt OpenAI to get tariffs for these categories
-    prompt = f"""
-    You are an expert on trade tariffs. List the tariffs for each of these product categories:
-    {', '.join(product_categories)}.
-    Provide the response in the format: "Product Category, Tariff Applied".
-    """
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "You are an assistant that provides trade tariff information."},
-            {"role": "user", "content": prompt}
-        ],
-        max_tokens=300,
-        temperature=0.7
-    )
-    print("Raw OpenAI Response:", response)  # Log the raw response
-
-    # Parse the OpenAI response
-    results = response['choices'][0]['message']['content'].strip().split("\n")
-    product_data = []
-    for result in results:
-        parts = result.split(",")  # Split by comma
-        if len(parts) == 2:
-            product_data.append({
-                "product": parts[0].strip(),
-                "tariff": parts[1].strip(),
-                "country": "N/A",  # Placeholder for simplicity
-                "comments": "N/A"  # Placeholder for simplicity
-            })
-
-    # Log the parsed data for debugging
-    print("Parsed Product Data:", product_data)
-
-    return product_data
 
 # Callback to update the brand bar chart and brand details table
 @app.callback(
@@ -375,23 +351,31 @@ def update_openai_tariff_table(selected_business_unit):
 
 # Callback to simulate competitor tariff impact
 @app.callback(
-    [Output('competitor-profit-impact-bar-chart', 'figure'),
-     Output('competitor-cogs-pie-chart', 'figure'),
-     Output('competitor-profit-margin-line-chart', 'figure')],
+    [Output('competitor-profit-impact-bar-chart', 'figure')],
     [Input('apply-competitor-scenario-button', 'n_clicks')],
     [State('competitor-tariff-increase-input', 'value')]
 )
 def simulate_competitor_tariff_impact(n_clicks, tariff_increase):
     if n_clicks > 0 and tariff_increase:
-        # Merge competitors data with supply chain data
-        competitors = competitors_data.merge(supply_chain_data, on='competitor_name')
+        # Filter supply chain data for China
+        china_supply_chain = supply_chain_data[supply_chain_data['competitor_supplier_country'] == 'China']
+
+        # Merge competitors data with filtered supply chain data
+        competitors = competitors_data.merge(
+            china_supply_chain[['competitor_name', 'Proportion_imports']],
+            on='competitor_name',
+            how='left'
+        )
+
+        # Convert Proportion_imports to numeric and handle non-numeric values
+        competitors['Proportion_imports'] = pd.to_numeric(competitors['Proportion_imports'], errors='coerce').fillna(0)
 
         # Calculate baseline profit and COGS
         competitors['baseline_profit'] = competitors['revenue_usd'] * 0.5
         competitors['baseline_cogs'] = competitors['revenue_usd'] - competitors['baseline_profit']
 
-        # Calculate tariff costs for China
-        competitors['china_tariff_cost'] = competitors['baseline_cogs'] * (competitors['china_share'] / 100) * (tariff_increase / 100)
+        # Calculate tariff costs for China (existing + scenario tariff)
+        competitors['china_tariff_cost'] = competitors['baseline_cogs'] * (competitors['Proportion_imports'] / 100) * (tariff_increase / 100)
 
         # Calculate new COGS and profit
         competitors['new_cogs'] = competitors['baseline_cogs'] + competitors['china_tariff_cost']
@@ -415,27 +399,233 @@ def simulate_competitor_tariff_impact(n_clicks, tariff_increase):
             labels={'Profit': 'Profit (USD)', 'Scenario': 'Scenario'}
         )
 
-        # Pie Chart: COGS Breakdown
-        cogs_pie_chart = px.pie(
-            values=[competitors['baseline_cogs'].sum(), competitors['china_tariff_cost'].sum()],
-            names=['Baseline COGS', 'Increased Tariff Costs'],
-            title='COGS Breakdown for Competitors'
+        return [profit_impact_chart]
+
+    return [{}]
+
+# Callback to find alternative suppliers
+@app.callback(
+    Output('radar-chart', 'figure'),
+    Input('apply-scenario-button', 'n_clicks')
+)
+def find_alternative_suppliers(n_clicks):
+    if n_clicks > 0:
+        # Combine product and brand descriptions into a single prompt
+        products_and_brands = brand_data[['brand_name', 'description']].drop_duplicates()
+        prompt = "You are an expert in global trade. Suggest alternative suppliers for the following products and brands currently sourced from China:\n"
+        for _, row in products_and_brands.iterrows():
+            prompt += f"- {row['brand_name']}: {row['description']}\n"
+
+        # Query OpenAI
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are an assistant that provides alternative supplier recommendations."},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=500,
+            temperature=0.7
+        )
+        print("Raw OpenAI Response:", response)  # Log the raw response
+
+        # Parse the OpenAI response
+        results = response['choices'][0]['message']['content'].strip().split("\n")
+        supplier_data = []
+        for result in results:
+            supplier_data.append({"Alternative Supplier": result.strip()})
+
+        # Create a radar chart (or table if preferred)
+        radar_chart = px.bar(
+            pd.DataFrame(supplier_data),
+            x="Alternative Supplier",
+            y=[1] * len(supplier_data),  # Dummy values for visualization
+            title="Alternative Suppliers for Products and Brands",
+            labels={"y": "Relevance"}
         )
 
-        # Line Chart: Profit Margin Change
-        competitors['baseline_margin'] = (competitors['baseline_profit'] / competitors['revenue_usd']) * 100
-        competitors['new_margin'] = (competitors['new_profit'] / competitors['revenue_usd']) * 100
-        profit_margin_chart = px.line(
-            competitors,
-            x='competitor_name',
-            y=['baseline_margin', 'new_margin'],
-            title='Profit Margin Change by Competitor',
-            labels={'value': 'Profit Margin (%)', 'variable': 'Scenario'}
+        return radar_chart
+
+    return {}
+
+# Callback for relocation recommendations
+@app.callback(
+    Output('relocation-conclusion', 'children'),
+    Input('relocation-brand-dropdown', 'value')
+)
+def relocation_recommendations(selected_brand):
+    if selected_brand:
+        # Prompt for OpenAI
+        prompt = f"""
+        You are an experienced Supply chain manager, working at Revelyst Group (1.2B revenues, 49% dependency on China suppliers).
+        For the brand "{selected_brand}", analyze relocation alternatives for the following product categories:
+        {', '.join(brand_data[brand_data['brand_name'] == selected_brand]['description'].tolist())}.
+        Use the following criteria:
+        - Supplier Complexity Fit
+        - Key Components & Skills
+        - Country Location & Logistics
+        - Operating & Labor Costs
+        - Transport Costs & Time
+        - Tariffs & Trade Agreements with USA
+        - Time to Move & Investments
+        Provide a table with scores (1-5) for each criterion and for each proposed country, and a conclusion on the best relocation option.
+        Output format: "Country,Criteria1:Score1,Criteria2:Score2,..."
+        """
+
+        # Query OpenAI
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are an assistant that provides supply chain relocation recommendations."},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=1000,
+            temperature=0.7
         )
+        print("Raw OpenAI Response:", response)  # Debugging
 
-        return profit_impact_chart, cogs_pie_chart, profit_margin_chart
+        # Parse the OpenAI response
+        results = response['choices'][0]['message']['content'].strip().split("\n")
+        country_scores = []
+        conclusion = []
 
-    return {}, {}, {}
+        for result in results:
+            if result.startswith("Conclusion:"):
+                conclusion.append(result)
+            else:
+                parts = result.split(",")
+                if len(parts) > 1:
+                    country = parts[0].strip()
+                    criteria_scores = {}
+                    for p in parts[1:]:
+                        if ":" in p:  # Ensure the part contains a colon
+                            key, value = p.split(":", 1)  # Split only on the first colon
+                            try:
+                                criteria_scores[key.strip()] = int(value.strip())
+                            except ValueError:
+                                print(f"Invalid score for {key.strip()}: {value.strip()}")  # Debugging
+                                continue  # Skip invalid entries
+                    if criteria_scores:  # Only add if criteria_scores is not empty
+                        total_score = sum(criteria_scores.values())
+                        country_scores.append({
+                            "Country": country,
+                            "Criteria Scores": criteria_scores,
+                            "Total Score": total_score
+                        })
+
+        # Ensure the data is created correctly
+        if not country_scores:
+            return html.Div("No relocation recommendations available for the selected brand.")
+
+        # Sort countries by total score and assign rankings
+        country_scores = sorted(country_scores, key=lambda x: x["Total Score"], reverse=True)
+        for i, country_data in enumerate(country_scores):
+            country_data["Rank"] = i + 1
+
+        # Create cards for each country
+        cards = []
+        for country_data in country_scores:
+            country = country_data["Country"]
+            criteria_scores = country_data["Criteria Scores"]
+            rank = country_data["Rank"]
+
+            # Create a radar chart for the criteria scores
+            radar_chart = px.line_polar(
+                pd.DataFrame({
+                    "Criteria": list(criteria_scores.keys()),
+                    "Score": list(criteria_scores.values())
+                }),
+                r="Score",
+                theta="Criteria",
+                line_close=True
+            )
+
+            # Create a card for the country
+            card = html.Div([
+                html.H4(f"{rank}. {country}", style={'text-align': 'center'}),
+                dcc.Graph(figure=radar_chart, config={'displayModeBar': False}, style={'height': '300px'}),
+                html.Div([html.P(f"{key}: {value}") for key, value in criteria_scores.items()], style={'padding': '10px'})
+            ], style={
+                'border': '1px solid #ccc',
+                'border-radius': '5px',
+                'padding': '10px',
+                'margin': '10px',
+                'width': '350px',
+                'display': 'inline-block',
+                'vertical-align': 'top',
+                'box-shadow': '2px 2px 5px rgba(0,0,0,0.1)'
+            })
+            cards.append(card)
+
+        # Create conclusion section
+        conclusion_text = html.Div([
+            html.H4("Conclusion"),
+            html.P(" ".join(conclusion))
+        ], style={'margin-top': '20px'})
+
+        return html.Div(cards + [conclusion_text], style={'display': 'flex', 'flex-wrap': 'wrap'})
+
+    return html.Div("Select a brand to view relocation recommendations.")
+
+# Store conversation history
+conversation_history = []
+
+@app.callback(
+    Output('chat-container', 'children'),
+    [Input('chat-input', 'n_submit')],
+    [State('chat-input', 'value')]
+)
+def chat_with_openai(n_submit, user_message):
+    global conversation_history
+    if n_submit and user_message:
+        # Add user message to conversation history
+        conversation_history.append({'role': 'user', 'content': user_message})
+
+        # Query OpenAI
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are an assistant that provides supply chain relocation recommendations."}
+            ] + conversation_history,
+            max_tokens=500,
+            temperature=0.7
+        )
+        print("Raw OpenAI Response:", response)  # Debugging
+
+        # Extract the response content
+        reply = response['choices'][0]['message']['content'].strip()
+        conversation_history.append({'role': 'assistant', 'content': reply})
+
+        # Format the conversation for display
+        chat_display = []
+        for message in conversation_history:
+            if message['role'] == 'user':
+                chat_display.append(html.Div(
+                    message['content'],
+                    style={
+                        'text-align': 'left',
+                        'margin': '10px',
+                        'padding': '10px',
+                        'background-color': '#e6f7ff',
+                        'border-radius': '5px',
+                        'max-width': '70%'
+                    }
+                ))
+            elif message['role'] == 'assistant':
+                chat_display.append(html.Div(
+                    message['content'],
+                    style={
+                        'text-align': 'left',
+                        'margin': '10px',
+                        'padding': '10px',
+                        'background-color': '#d9f7be',
+                        'border-radius': '5px',
+                        'max-width': '70%'
+                    }
+                ))
+
+        return chat_display
+
+    return []
 
 # Run the app
 if __name__ == '__main__':
