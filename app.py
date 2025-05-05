@@ -467,4 +467,9 @@ def relocation_recommendations(selected_brand):
         - Transport Costs & Time
         - Tariffs & Trade Agreements with USA
         - Time to Move & Investments
-        Provide
+        Provide a detailed analysis for each criterion.
+        """
+        # Add logic to process the prompt with OpenAI here
+        return "Relocation analysis generated."
+
+    return "Please select a brand to view relocation recommendations."
